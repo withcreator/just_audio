@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:audio_session/audio_session.dart';
+// import 'package:audio_session/audio_session.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:just_audio/just_audio.dart';
@@ -388,11 +388,11 @@ void runTests() {
     await player.dispose();
   });
 
-  test('setAndroidAudioAttributes', () async {
-    final player = AudioPlayer();
-    await player.setAndroidAudioAttributes(const AndroidAudioAttributes());
-    await player.dispose();
-  });
+  // test('setAndroidAudioAttributes', () async {
+  //   final player = AudioPlayer();
+  //   await player.setAndroidAudioAttributes(const AndroidAudioAttributes());
+  //   await player.dispose();
+  // });
 
   test('positionStream', () async {
     final player = AudioPlayer();
