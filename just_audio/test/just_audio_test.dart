@@ -331,15 +331,15 @@ void runTests() {
     await player.dispose();
   });
 
-  test('setAutomaticallyWaitsToMinimizeStalling', () async {
-    final player = AudioPlayer();
-    expect(player.automaticallyWaitsToMinimizeStalling, equals(true));
-    await player.setAutomaticallyWaitsToMinimizeStalling(false);
-    expect(player.automaticallyWaitsToMinimizeStalling, equals(false));
-    await player.setAutomaticallyWaitsToMinimizeStalling(true);
-    expect(player.automaticallyWaitsToMinimizeStalling, equals(true));
-    await player.dispose();
-  });
+  // test('setAutomaticallyWaitsToMinimizeStalling', () async {
+  //   final player = AudioPlayer();
+  //   expect(player.automaticallyWaitsToMinimizeStalling, equals(true));
+  //   await player.setAutomaticallyWaitsToMinimizeStalling(false);
+  //   expect(player.automaticallyWaitsToMinimizeStalling, equals(false));
+  //   await player.setAutomaticallyWaitsToMinimizeStalling(true);
+  //   expect(player.automaticallyWaitsToMinimizeStalling, equals(true));
+  //   await player.dispose();
+  // });
 
   test('setCanUseNetworkResourcesForLiveStreamingWhilePaused', () async {
     final player = AudioPlayer();

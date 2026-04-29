@@ -105,7 +105,7 @@ class AudioPlayer {
   StreamSubscription<PlayerDataMessage>? _playerDataSubscription;
 
   // StreamSubscription<AndroidAudioAttributes>?
-  //     _androidAudioAttributesSubscription;
+      // _androidAudioAttributesSubscription;
   StreamSubscription<void>? _becomingNoisyEventSubscription;
   // StreamSubscription<AudioInterruptionEvent>? _interruptionEventSubscription;
   StreamSubscription<void>? _positionDiscontinuitySubscription;
@@ -357,63 +357,63 @@ class AudioPlayer {
     _setPlatformActive(false, force: true)
         ?.catchError((dynamic e) async => null);
     // Respond to changes to AndroidAudioAttributes configuration.
-    // if (androidApplyAudioAttributes && _isAndroid()) {
-    //   AudioSession.instance.then((audioSession) {
-    //     _androidAudioAttributesSubscription = audioSession.configurationStream
-    //         .map((conf) => conf.androidAudioAttributes)
-    //         .where((attributes) => attributes != null)
-    //         .cast<AndroidAudioAttributes>()
-    //         .distinct()
-    //         .listen(setAndroidAudioAttributes);
-    //   });
-    // }
-    // if (handleInterruptions) {
-    //   AudioSession.instance.then((session) {
-    //     _becomingNoisyEventSubscription =
-    //         session.becomingNoisyEventStream.listen((_) {
-    //       pause();
-    //     });
-    //     _interruptionEventSubscription =
-    //         session.interruptionEventStream.listen((event) {
-    //       if (event.begin) {
-    //         switch (event.type) {
-    //           case AudioInterruptionType.duck:
-    //             assert(_isAndroid());
-    //             if (session.androidAudioAttributes!.usage ==
-    //                 AndroidAudioUsage.game) {
-    //               setVolume(volume / 2);
-    //             }
-    //             _playInterrupted = false;
-    //             break;
-    //           case AudioInterruptionType.pause:
-    //           case AudioInterruptionType.unknown:
-    //             if (playing) {
-    //               pause();
-    //               // Although pause is async and sets _playInterrupted = false,
-    //               // this is done in the sync portion.
-    //               _playInterrupted = true;
-    //             }
-    //             break;
-    //         }
-    //       } else {
-    //         switch (event.type) {
-    //           case AudioInterruptionType.duck:
-    //             assert(_isAndroid());
-    //             setVolume(min(1.0, volume * 2));
-    //             _playInterrupted = false;
-    //             break;
-    //           case AudioInterruptionType.pause:
-    //             if (_playInterrupted) play();
-    //             _playInterrupted = false;
-    //             break;
-    //           case AudioInterruptionType.unknown:
-    //             _playInterrupted = false;
-    //             break;
-    //         }
-    //       }
-    //     });
-    //   });
-    // }
+    if (androidApplyAudioAttributes && _isAndroid()) {
+      // AudioSession.instance.then((audioSession) {
+      //   _androidAudioAttributesSubscription = audioSession.configurationStream
+      //       .map((conf) => conf.androidAudioAttributes)
+      //       .where((attributes) => attributes != null)
+      //       .cast<AndroidAudioAttributes>()
+      //       .distinct()
+      //       .listen(setAndroidAudioAttributes);
+      // });
+    }
+    if (handleInterruptions) {
+      // AudioSession.instance.then((session) {
+      //   _becomingNoisyEventSubscription =
+      //       session.becomingNoisyEventStream.listen((_) {
+      //     pause();
+      //   });
+      //   _interruptionEventSubscription =
+      //       session.interruptionEventStream.listen((event) {
+      //     if (event.begin) {
+      //       switch (event.type) {
+      //         case AudioInterruptionType.duck:
+      //           assert(_isAndroid());
+      //           if (session.androidAudioAttributes!.usage ==
+      //               AndroidAudioUsage.game) {
+      //             setVolume(volume / 2);
+      //           }
+      //           _playInterrupted = false;
+      //           break;
+      //         case AudioInterruptionType.pause:
+      //         case AudioInterruptionType.unknown:
+      //           if (playing) {
+      //             pause();
+      //             // Although pause is async and sets _playInterrupted = false,
+      //             // this is done in the sync portion.
+      //             _playInterrupted = true;
+      //           }
+      //           break;
+      //       }
+      //     } else {
+      //       switch (event.type) {
+      //         case AudioInterruptionType.duck:
+      //           assert(_isAndroid());
+      //           setVolume(min(1.0, volume * 2));
+      //           _playInterrupted = false;
+      //           break;
+      //         case AudioInterruptionType.pause:
+      //           if (_playInterrupted) play();
+      //           _playInterrupted = false;
+      //           break;
+      //         case AudioInterruptionType.unknown:
+      //           _playInterrupted = false;
+      //           break;
+      //       }
+      //     }
+      //   });
+      // });
+    }
     if (maxSkipsOnError > 0) {
       var consecutiveErrorCount = 0;
       _errorsSubscription = errorStream.listen((error) async {
@@ -1080,6 +1080,7 @@ class AudioPlayer {
   /// This method activates the audio session before playback, and will do
   /// nothing if activation of the audio session fails for any reason.
   Future<void> play() async {
+    print('start playing');
     if (_disposed) return;
     if (playing) return;
     _playInterrupted = false;
@@ -1095,8 +1096,9 @@ class AudioPlayer {
     ));
     final playCompleter = Completer<dynamic>();
     // final audioSession = await AudioSession.instance;
-    if (!_handleAudioSessionActivation /*|| await audioSession.setActive(true))*/) {
+    if (true /*!_handleAudioSessionActivation || await audioSession.setActive(true)*/) {
       if (!playing) return;
+      print('start playing');
       // TODO: rewrite this to more cleanly handle simultaneous load/play
       // requests which each may result in platform play requests.
       final requireActive = _playlist.children.isNotEmpty;
@@ -1259,15 +1261,15 @@ class AudioPlayer {
 
   /// Sets automaticallyWaitsToMinimizeStalling for AVPlayer in iOS 10.0 or later, defaults to true.
   /// Has no effect on Android clients
-  Future<void> setAutomaticallyWaitsToMinimizeStalling(
-      final bool automaticallyWaitsToMinimizeStalling) async {
-    if (_disposed) return;
-    _automaticallyWaitsToMinimizeStalling =
-        automaticallyWaitsToMinimizeStalling;
-    await (await _platform).setAutomaticallyWaitsToMinimizeStalling(
-        SetAutomaticallyWaitsToMinimizeStallingRequest(
-            enabled: automaticallyWaitsToMinimizeStalling));
-  }
+  // Future<void> setAutomaticallyWaitsToMinimizeStalling(
+  //     final bool automaticallyWaitsToMinimizeStalling) async {
+  //   if (_disposed) return;
+  //   _automaticallyWaitsToMinimizeStalling =
+  //       automaticallyWaitsToMinimizeStalling;
+  //   await (await _platform).setAutomaticallyWaitsToMinimizeStalling(
+  //       SetAutomaticallyWaitsToMinimizeStallingRequest(
+  //           enabled: automaticallyWaitsToMinimizeStalling));
+  // }
 
   /// Sets canUseNetworkResourcesForLiveStreamingWhilePaused on iOS/macOS,
   /// defaults to false.
@@ -1679,19 +1681,19 @@ class AudioPlayer {
         final playing = this.playing;
         // To avoid a glitch in ExoPlayer, ensure that any requested audio
         // attributes are set before loading the audio source.
-        if (_isAndroid() || _isUnitTest()) {
-          // if (_androidApplyAudioAttributes) {
-          //   final audioSession = await AudioSession.instance;
-          //   if (checkInterruption()) return inactiveResult(platform);
-          //   _androidAudioAttributes ??=
-          //       audioSession.configuration?.androidAudioAttributes;
-          // }
-          // if (_androidAudioAttributes != null) {
-          //   await _internalSetAndroidAudioAttributes(
-          //       platform, _androidAudioAttributes!);
-          //   if (checkInterruption()) return inactiveResult(platform);
-          // }
-        }
+        // if (_isAndroid() || _isUnitTest()) {
+        //   if (_androidApplyAudioAttributes) {
+        //     final audioSession = await AudioSession.instance;
+        //     if (checkInterruption()) return inactiveResult(platform);
+        //     _androidAudioAttributes ??=
+        //         audioSession.configuration?.androidAudioAttributes;
+        //   }
+        //   if (_androidAudioAttributes != null) {
+        //     await _internalSetAndroidAudioAttributes(
+        //         platform, _androidAudioAttributes!);
+        //     if (checkInterruption()) return inactiveResult(platform);
+        //   }
+        // }
         if (!automaticallyWaitsToMinimizeStalling) {
           // Only set if different from default.
           await platform.setAutomaticallyWaitsToMinimizeStalling(
